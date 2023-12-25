@@ -19,20 +19,54 @@ struct ContentView: View {
     NavigationStack {
       TabView(selection: $tab,
               content:  {
-        ListView(expenses: expenses, filter: "Personal").tabItem { Label("Personal", systemImage: "person") }.tag(0)
-        ListView(expenses: expenses, filter: "Business").tabItem { Label("Business", systemImage: "newspaper") }.tag(1)
-      })
-        .indexViewStyle(.page)
-        .navigationTitle("iExpense")
-        .toolbar {
-            Button("Add Expense", systemImage: "plus") {
-              showingAddExpense = true
-            }
-        }
+        ListView(expenses: expenses, filter: "Personal").tag(0)
         
+        ListView(expenses: expenses, filter: "Business").tag(1)
+      })
+        .navigationTitle("iExpense")
+//        .toolbar {
+//            Button("Add Expense", systemImage: "plus") {
+//              showingAddExpense = true
+//            }
+//        }
+      HStack{
+        Button(action: {
+          tab = 0
+        }){
+          VStack{
+            Image(systemName: "person").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).foregroundColor(tab != 0 ? .gray : .blue)
+            Text("Personal").foregroundColor(tab != 0 ? .gray : .blue)
+          }
+        }
+        Spacer()
+        Button(action: {
+          showingAddExpense = true
+        })
+        {
+          VStack{
+            Image(systemName: "plus").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+          }
+        }.buttonStyle(CustomButtonStyle()).labelsHidden()
+        Spacer()
+        Button(action: {
+          tab = 1
+        }){
+          VStack{
+            Image(systemName: "newspaper").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).foregroundColor(tab != 1 ? .gray : .blue)
+            Text("Business").foregroundColor(tab != 1 ? .gray : .blue)
+          }
+        }
+          
+      }.padding(.horizontal, 20)
+        .padding(.vertical, 10)
+      
+      
         
     }.sheet(isPresented: $showingAddExpense) {
       AddView(expenses: expenses, type: typeView[tab])
+        .presentationDetents([.medium, .large])
+        .presentationBackgroundInteraction(.automatic)
+        .presentationBackground(.foreground)
       
   }
   }
@@ -69,6 +103,20 @@ class Expenses {
   }
 }
 
+public struct CustomButtonStyle: ButtonStyle {
+    public func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .font(Font.body.weight(.medium))
+            .padding(.vertical, 10)
+            .foregroundColor(Color.white)
+            .frame(width: 50, height: 50)
+            .background(
+                RoundedRectangle(cornerRadius: 14.0, style: .continuous)
+                    .fill(Color.accentColor)
+                )
+            .opacity(configuration.isPressed ? 0.4 : 1.0)
+    }
+}
 
 #Preview {
     ContentView()

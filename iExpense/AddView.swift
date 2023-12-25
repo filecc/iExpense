@@ -14,13 +14,14 @@ struct AddView: View {
     @State private var name = ""
     @State var type : String
     @State private var amount = 0.0
+    @FocusState private var isFocused: Bool
 
     let types = ["Business", "Personal"]
 
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Name", text: $name)
+              TextField("Name", text: $name)
 
                 Picker("Type", selection: $type) {
                     ForEach(types, id: \.self) {
